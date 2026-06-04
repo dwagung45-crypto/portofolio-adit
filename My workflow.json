@@ -1,0 +1,160 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "12c73951-00a8-4a86-a89d-df0499d0e076",
+      "name": "When chat message received",
+      "webhookId": "be003572-6171-4a10-af47-a42aff88378b"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Kamu adalah AI Agent wisata Bali.\n\nGunakan tool Google Sheets untuk membaca database wisata sebelum menjawab pertanyaan pengguna.\n\nTugasmu:\n- Merekomendasikan tempat wisata berdasarkan budget, lokasi, dan jenis wisata\n- Menjawab dengan singkat dan jelas\n- Mengingat preferensi pengguna\n- Meminta klarifikasi jika pertanyaan tidak jelas\n\nJangan mengarang data yang tidak ada di spreadsheet."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "b67943ce-f907-44ec-909d-5ce092b878c3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-flash-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        208
+      ],
+      "id": "3d367967-0de3-461d-9f4f-0a694e6c9b86",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Et8smAZFxowTJ9nk",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "session-1"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        432,
+        208
+      ],
+      "id": "4d735f93-f700-4a83-aa24-5513b1eb4148",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1gPV8koh6PPIYV4dB4j-ISNzTo1HdezzPeq_l9w4hRuA",
+          "mode": "list",
+          "cachedResultName": "Database wisata ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gPV8koh6PPIYV4dB4j-ISNzTo1HdezzPeq_l9w4hRuA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gPV8koh6PPIYV4dB4j-ISNzTo1HdezzPeq_l9w4hRuA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        576,
+        208
+      ],
+      "id": "2a36cc71-4533-4de5-8afd-0544a0be4736",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ksxJAFZHyawRfA14",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "39c42dc3-4c8a-4dbd-9dac-640bc6100b8f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "33b43cfdb33c9b3264b691a8341f1d7c75e5cdf3bed8a9c3b79f3f6876c17953"
+  },
+  "id": "LCrOzyoAH0LJcrrM",
+  "tags": []
+}
